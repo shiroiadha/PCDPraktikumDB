@@ -98,7 +98,7 @@ class ShowImage(QMainWindow):
             self.displayImage(2)
 
     def saveF(self):
-        saveimg(self, self.Image)
+        saveimg(self, self.Image3)
 
     def gs(self):
         if self.Image is not None:
@@ -130,7 +130,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = brightness(self.Image, 100)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def ca(self):
@@ -140,7 +140,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = contrast(self.Image, 1.5)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def cs(self):
@@ -150,12 +150,12 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = contrast_stretch(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def nv(self):
         hasil = negative(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def ng(self):
@@ -165,7 +165,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = negative_gray(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def bin(self):
@@ -175,7 +175,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = binarization(self.Image, 150)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
 
@@ -245,7 +245,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, convolve_kernel1())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def convkn2(self):
@@ -255,7 +255,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, convolve_kernel2())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def mn2x2(self):
@@ -265,7 +265,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = mean(self.Image, mean_2x2())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def mn3x3(self):
@@ -275,7 +275,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = mean(self.Image, mean_3x3())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def gaus(self):
@@ -285,7 +285,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = gaussian(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def mdn(self):
@@ -295,7 +295,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = median(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def sharpkn1(self):
@@ -305,7 +305,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, sharpening_kernel1())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def sharpkn2(self):
@@ -315,7 +315,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, sharpening_kernel2())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def sharpkn3(self):
@@ -325,7 +325,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, sharpening_kernel3())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def sharpkn4(self):
@@ -335,7 +335,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, sharpening_kernel4())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def sharpkn5(self):
@@ -345,7 +345,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, sharpening_kernel5())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def sharpkn6(self):
@@ -355,7 +355,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, sharpening_kernel6())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def sharpkn7(self):
@@ -365,7 +365,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = convolve2d(self.Image, sharpening_kernel7())
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def max(self):
@@ -375,7 +375,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = max(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
 
@@ -388,7 +388,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = fourier_transform(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def dft(self):
@@ -398,7 +398,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = dft2d(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
 
@@ -411,7 +411,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = sobel(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def prwt(self):
@@ -421,7 +421,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = prewitt(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def rbts(self):
@@ -431,7 +431,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = roberts(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def lplc(self):
@@ -441,7 +441,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = laplacian(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def log(self):
@@ -451,7 +451,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = log(self.Image)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def cny(self):
@@ -461,7 +461,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = canny(self.Image, 3, 1.4, low_threshold=50, high_threshold=150)
-        self.Image = hasil
+        self.Image3 = hasil
         self.displayImage(3)
 
     def displayImage(self, windows=1, clear=False):
