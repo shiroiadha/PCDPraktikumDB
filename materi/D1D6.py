@@ -19,6 +19,30 @@ def convimg(image, kernel):
 
     return np.clip(convout, 0, 255).astype(np.uint8)
 
+def convimg_color(image, kernel):
+    Hk, Wk = kernel.shape
+    pad_h = Hk // 2
+    pad_w = Wk // 2
+
+    # Cek apakah gambar berwarna
+    is_color = len(image.shape) == 3
+    if is_color:
+        channels = cv2.split(image)
+        output_channels = []
+        for ch in channels:
+            padded_ch = cv2.copyMakeBorder(ch, pad_h, pad_h + (Hk % 2 == 0),
+                                           pad_w, pad_w + (Wk % 2 == 0), cv2.BORDER_REFLECT)
+            HImg, WImg = ch.shape
+            convout = np.zeros((HImg, WImg), dtype=np.float32)
+            for i in range(HImg):
+                for j in range(WImg):
+                    region = padded_ch[i:i+Hk, j:j+Wk]
+                    convout[i, j] = np.sum(region * kernel)
+            output_channels.append(np.clip(convout, 0, 255).astype(np.uint8))
+        return cv2.merge(output_channels)
+    else:
+        # Grayscale fallback
+        return convimg(image, kernel)
 
 # Convolve Kernel Options
 def convolve_kernel1():
@@ -36,12 +60,6 @@ def sharpening_kernel1():
     return np.array([[0, -1,  0],
                        [-1, 5, -1],
                        [0, -1,  0]], dtype=np.float32)
-
-def mean_2x2():
-    return 2
-
-def mean_3x3():
-    return 3
 
 def sharpening_kernel2():
     return np.array([[-1, -1, -1],
@@ -76,14 +94,14 @@ def sharpening_kernel7():
 # Convolve2d
 def convolve2d(image, kernel):
     kernel = kernel
-    result = convimg(image, kernel)
+    result = convimg_color(image, kernel)
     return np.clip(result, 0, 255).astype(np.uint8)
 
 # Mean Filter
 def mean(image, kernel_size=3):
     kernel_size = int(kernel_size)
     kernel = np.ones((kernel_size, kernel_size), dtype=np.float32) / (kernel_size * kernel_size)
-    return convimg(image, kernel)
+    return convimg_color(image, kernel)
 
 # Gaussian Filter
 def gaussian(image, kernel_size=3, sigma=1.0):
@@ -92,7 +110,7 @@ def gaussian(image, kernel_size=3, sigma=1.0):
     xx, yy = np.meshgrid(ax, ax)
     kernel = (1 / (2 * np.pi * sigma ** 2)) * np.exp(-(xx**2 + yy**2) / (2. * sigma**2))
     kernel = kernel / np.sum(kernel)
-    return convimg(image, kernel)
+    return convimg_color(image, kernel)
 
 # Median Filter
 def median(image, kernel_size=3):

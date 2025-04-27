@@ -21,9 +21,6 @@ def rotate_image(image, angle):
     matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
     return cv2.warpAffine(image, matrix, (w, h))
 
-def flip_image(image, mode):
-    return cv2.flip(image, mode)
-
 def adder(image, image2):
     # Samakan ukuran
     if image.shape != image2.shape:

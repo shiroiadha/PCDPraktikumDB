@@ -1,17 +1,21 @@
 import sys
+
+import cv2
+import numpy as np
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.uic import loadUi
 
-from utilitis.io import loadimg, saveimg
+from utilitis.io import loadimg, saveimg, array2qimage
 from utilitis.grayscale import grayscaling
 
 # Taken from "materi" lib
 from materi.A1A8 import brightness, contrast, contrast_stretch, negative, negative_gray, binarization # Buat materi di A1-A8
-from materi.A9C2 import histogram_equalization, histogram_rgb, rotate_image, flip_image, adder, subs, logic_and, \
+from materi.A9C2 import histogram_equalization, histogram_rgb, rotate_image, adder, subs, logic_and, \
     logic_or, logic_xor # Buat materi A9-C2
-from materi.D1D6 import convolve2d, convolve_kernel1, convolve_kernel2, mean, mean_2x2, mean_3x3, gaussian, median, max, sharpening_kernel1, \
+from materi.D1D6 import convolve2d, convolve_kernel1, convolve_kernel2, mean, gaussian, median, max, sharpening_kernel1, \
     sharpening_kernel2, sharpening_kernel3, sharpening_kernel4, sharpening_kernel5, sharpening_kernel6, \
     sharpening_kernel7  # Buat materi di D1-D6
 from materi.E1E2 import fourier_transform, dft2d # Buat materi di E1 & E2
@@ -42,6 +46,17 @@ class ShowImage(QMainWindow):
         self.actionNgte.triggered.connect(self.nv)
         self.actionNgte_G.triggered.connect(self.ng)
         self.actionBin.triggered.connect(self.bin)
+
+        # HISTOGRAM OPERTATION MENU
+        self.actiongG_Hstgrm.triggered.connect(self.gh)
+        self.actionRGB_Hstgrm.triggered.connect(self.rgbh)
+        self.actionEqualizer.triggered.connect(self.eqh)
+
+        # GEOMETRIC HISTOGRAM MENU
+        # self.actionTranslation.triggered.connect(self.tr)
+        self.actionRotation.triggered.connect(self.rt)
+        # self.actionResizing.triggered.connect(self.rs)
+        # self.actionCropping.triggered.connect(self.cp)
 
         # LOGIC OPERATION MENU
         self.actionAdd.triggered.connect(self.add)
@@ -102,10 +117,16 @@ class ShowImage(QMainWindow):
 
     def gs(self):
         if self.Image is not None:
-            self.Image = grayscaling(self.Image)
+            try:
+                self.Image = grayscaling(self.Image)
+            except:
+                pass
             self.displayImage(1)
         if self.Image2 is not None:
-            self.Image2 = grayscaling(self.Image2)
+            try:
+                self.Image2 = grayscaling(self.Image2)
+            except:
+                pass
             self.displayImage(2)
 
     def clnw1(self):
@@ -122,7 +143,7 @@ class ShowImage(QMainWindow):
 
 
 
-    # BASIC OPERATION MENU
+    # BASIC OPERATION FUNCTION
     def ba(self):
         try:
             self.Image = grayscaling(self.Image)
@@ -177,6 +198,44 @@ class ShowImage(QMainWindow):
         hasil = binarization(self.Image, 150)
         self.Image3 = hasil
         self.displayImage(3)
+
+
+
+    # HISTOGRAM OPERATION FUNCTION
+    def gh(self):
+        try:
+            self.Image = grayscaling(self.Image)
+        except:
+            pass
+
+        hasil = histogram_rgb(self.Image)
+        self.Image3 = hasil
+        self.displayImage(3)
+
+    def rgbh(self):
+        hasil = histogram_rgb(self.Image)
+        self.Image3 = hasil
+        self.displayImage(3)
+
+    def eqh(self):
+        try:
+            self.Image = grayscaling(self.Image)
+        except:
+            pass
+
+        hasil = histogram_equalization(self.Image)
+        self.Image3 = hasil
+        self.displayImage(3)
+
+
+
+    # GEOMETRIC OPERATION FUNCTION
+    def rt(self):
+        hasil = rotate_image(self.Image, 90)
+        self.Image3 = hasil
+        self.displayImage(3)
+
+
 
 
     # LOGIC OPERATION FUNCTION
@@ -264,7 +323,7 @@ class ShowImage(QMainWindow):
         except:
             pass
 
-        hasil = mean(self.Image, mean_2x2())
+        hasil = mean(self.Image, 2)
         self.Image3 = hasil
         self.displayImage(3)
 
@@ -274,7 +333,7 @@ class ShowImage(QMainWindow):
         except:
             pass
 
-        hasil = mean(self.Image, mean_3x3())
+        hasil = mean(self.Image, 3)
         self.Image3 = hasil
         self.displayImage(3)
 
@@ -319,10 +378,10 @@ class ShowImage(QMainWindow):
         self.displayImage(3)
 
     def sharpkn3(self):
-        try:
-            self.Image = grayscaling(self.Image)
-        except:
-            pass
+        # try:
+        #     self.Image = grayscaling(self.Image)
+        # except:
+        #     pass
 
         hasil = convolve2d(self.Image, sharpening_kernel3())
         self.Image3 = hasil
@@ -388,6 +447,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = fourier_transform(self.Image)
+        hasil = array2qimage(hasil)
         self.Image3 = hasil
         self.displayImage(3)
 
@@ -398,6 +458,7 @@ class ShowImage(QMainWindow):
             pass
 
         hasil = dft2d(self.Image)
+        hasil = array2qimage(hasil)
         self.Image3 = hasil
         self.displayImage(3)
 
@@ -489,25 +550,36 @@ class ShowImage(QMainWindow):
         if img_data is None:
             return
 
-        if len(img_data.shape) == 3:
-            if img_data.shape[2] == 4:
-                qformat = QImage.Format_RGBA8888
-            else:
-                qformat = QImage.Format_RGB888
+        # Pastikan img_data adalah numpy.ndarray sebelum memeriksa shape
+        if isinstance(img_data, np.ndarray):
+            if len(img_data.shape) == 3:
+                if img_data.shape[2] == 4:
+                    qformat = QImage.Format_RGBA8888
+                else:
+                    qformat = QImage.Format_RGB888
+        elif isinstance(img_data, QImage):
+            # Kalau img_data sudah QImage, langsung konversi formatnya
+            qformat = QImage.Format_RGB888
 
-        img = QImage(img_data, img_data.shape[1], img_data.shape[0], img_data.strides[0], qformat)
-        img = img.rgbSwapped()
+        # Jika img_data adalah numpy.ndarray, konversi ke QImage
+        if isinstance(img_data, np.ndarray):
+            img = QImage(img_data.data, img_data.shape[1], img_data.shape[0], img_data.strides[0], qformat)
+            img = img.rgbSwapped()
+        else:
+            img = img_data  # Jika sudah QImage, tidak perlu konversi lagi
 
         pixmap = QPixmap.fromImage(img)
-        scaled_pixmap1 = pixmap.scaled(self.label_window1.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-        scaled_pixmap2 = pixmap.scaled(self.label_window2.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
-        scaled_pixmap3 = pixmap.scaled(self.label_window3.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        scaled_pixmap1 = pixmap.scaled(self.label_window1.size(), QtCore.Qt.KeepAspectRatio,
+                                       QtCore.Qt.SmoothTransformation)
+        scaled_pixmap2 = pixmap.scaled(self.label_window2.size(), QtCore.Qt.KeepAspectRatio,
+                                       QtCore.Qt.SmoothTransformation)
+        scaled_pixmap3 = pixmap.scaled(self.label_window3.size(), QtCore.Qt.KeepAspectRatio,
+                                       QtCore.Qt.SmoothTransformation)
 
         if windows == 1:
             self.label_window1.setPixmap(scaled_pixmap1)
             self.label_window1.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         elif windows == 2:
-
             self.label_window2.setPixmap(scaled_pixmap2)
             self.label_window2.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         elif windows == 3:
